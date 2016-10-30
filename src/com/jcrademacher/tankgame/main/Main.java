@@ -5,26 +5,21 @@ import javax.swing.*;
 /**
  * Created by jackrademacher on 10/29/16.
  */
-public class Main extends JPanel {
+public class Main {
     JFrame mainframe = new JFrame("Tank Game");
-
-    JButton load = new JButton("");
+    JPanel content;
 
     public static void main(String args[]) {
         new Main();
     }
 
     public Main() {
-        mainframe.setContentPane(this);
+        content = SwingHandler.createController();
+
+        mainframe.setContentPane(content);
         mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainframe.setResizable(false);
-        mainframe.setSize(400,400);
+        mainframe.setResizable(true);
+        mainframe.setSize(350,200);
         mainframe.setVisible(true);
-
-        initGUI();
-    }
-
-    private void initGUI() {
-
     }
 }
