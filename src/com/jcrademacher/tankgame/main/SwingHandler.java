@@ -1,14 +1,15 @@
 package com.jcrademacher.tankgame.main;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by jackrademacher on 10/29/16.
  */
 public class SwingHandler {
 
-    public static JPanel createController() {
+    public static JPanel createController(Main main) {
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
         JPanel middle = new JPanel();
@@ -19,6 +20,10 @@ public class SwingHandler {
         JButton loadButton = new JButton("Import Species");
         JButton saveButton = new JButton("Export Species");
         JButton startButton = new JButton("Start");
+
+        loadButton.addActionListener(main);
+        saveButton.addActionListener(main);
+        startButton.addActionListener(main);
 
         JLabel type = new JLabel("Select game type:");
 
