@@ -1,5 +1,7 @@
 package com.jcrademacher.tankgame.main;
 
+import com.jcrademacher.tankgame.game.GameDriver;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +18,7 @@ public class Main implements ActionListener {
     }
 
     public Main() {
+        // creates content panel
         content = SwingHandler.createController(this);
 
         mainframe.setContentPane(content);
@@ -28,7 +31,13 @@ public class Main implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
+        String text = ((JButton)src).getText();
 
-        System.out.println(src);
+        // starts game with GameDriver, fires actionPerformed using javax.swing.Timer to Game class
+        if(text.equals("Start")) {
+            // gets gameType from combobox
+            GameDriver driver = new GameDriver();
+            driver.start();
+        }
     }
 }

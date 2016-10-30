@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
  */
 public class SwingHandler {
 
+    public static JComboBox<String> gameType;
+
     public static JPanel createController(Main main) {
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
@@ -29,7 +31,7 @@ public class SwingHandler {
 
         String[] gameTypes = {"Human v AI", "Human v Genetic", "Genetic v Genetic", "Genetic v AI", "AI v AI"};
 
-        JComboBox<String> gameType = new JComboBox<>(gameTypes);
+        gameType = new JComboBox<>(gameTypes);
 
         top.add(loadButton);
         top.add(saveButton);
