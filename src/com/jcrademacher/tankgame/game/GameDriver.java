@@ -23,5 +23,11 @@ public class GameDriver {
 
     public void start() {
         timer.start();
+        System.out.println("Start");
+    }
+
+    public void pause() {
+        timer.stop();
+        System.out.println("Pause");
     }
 }

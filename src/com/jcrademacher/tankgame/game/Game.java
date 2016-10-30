@@ -6,6 +6,7 @@ import com.jcrademacher.tankgame.player.HumanPlayer;
 import com.jcrademacher.tankgame.player.Player;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +16,8 @@ import java.awt.event.ActionListener;
 public class Game extends JPanel implements ActionListener {
     private Player p1;
     private Player p2;
+
+    private JFrame frame = new JFrame("Tank Game");
 
     // creates players as needed with specified game type
     public Game(String gameType) {
@@ -38,6 +41,16 @@ public class Game extends JPanel implements ActionListener {
             p1 = new AIPlayer();
             p2 = new AIPlayer();
         }
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setSize(800,800);
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
     }
 
     @Override

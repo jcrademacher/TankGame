@@ -10,8 +10,10 @@ import java.awt.event.ActionListener;
  * Created by jackrademacher on 10/29/16.
  */
 public class Main implements ActionListener {
-    JFrame mainframe = new JFrame("Tank Game");
-    JPanel content;
+    private JFrame mainframe = new JFrame("Tank Game");
+    private JPanel content;
+
+    private GameDriver driver;
 
     public static void main(String args[]) {
         new Main();
@@ -35,9 +37,20 @@ public class Main implements ActionListener {
 
         // starts game with GameDriver, fires actionPerformed using javax.swing.Timer to Game class
         if(text.equals("Start")) {
-            // gets gameType from combobox
-            GameDriver driver = new GameDriver();
-            driver.start();
+            if(driver == null) {
+                // gets gameType from combobox
+                driver = new GameDriver();
+                driver.start();
+            }
+            else {
+                driver.start();
+            }
+
+            ((JButton) src).setText("Pause");
+        }
+        if(text.equals("Pause")) {
+            driver.pause();
+            ((JButton) src).setText("Start");
         }
     }
 }
