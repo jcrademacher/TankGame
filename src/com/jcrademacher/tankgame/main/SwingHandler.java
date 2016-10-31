@@ -1,8 +1,6 @@
 package com.jcrademacher.tankgame.main;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by jackrademacher on 10/29/16.
