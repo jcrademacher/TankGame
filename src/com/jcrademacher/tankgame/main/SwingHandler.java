@@ -11,6 +11,13 @@ public class SwingHandler {
 
     public static JComboBox<String> gameType;
 
+    public static JButton importButton;
+    public static JButton saveButton;
+    public static JButton startButton;
+    public static JButton loadSpecies;
+
+    public static JLabel fileLabel = new JLabel();
+
     public static JPanel createController(Main main) {
         JPanel panel = new JPanel();
         JPanel top = new JPanel();
@@ -19,13 +26,18 @@ public class SwingHandler {
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JButton loadButton = new JButton("Import Species");
-        JButton saveButton = new JButton("Export Species");
-        JButton startButton = new JButton("Start");
+        importButton = new JButton("Import Species...");
+        saveButton = new JButton("Export Species...");
+        startButton = new JButton("Start");
+        loadSpecies = new JButton("Load Species");
 
-        loadButton.addActionListener(main);
+        loadSpecies.setEnabled(false);
+        fileLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+        importButton.addActionListener(main);
         saveButton.addActionListener(main);
         startButton.addActionListener(main);
+        loadSpecies.addActionListener(main);
 
         JLabel type = new JLabel("Select game type:");
 
@@ -33,15 +45,18 @@ public class SwingHandler {
 
         gameType = new JComboBox<>(gameTypes);
 
-        top.add(loadButton);
+        top.add(importButton);
         top.add(saveButton);
         middle.add(type);
         middle.add(gameType);
-        bottom.add(Box.createVerticalStrut(50));
+        bottom.add(loadSpecies);
         bottom.add(startButton);
 
         panel.add(top);
+        panel.add(fileLabel);
+        panel.add(Box.createVerticalGlue());
         panel.add(middle);
+        panel.add(Box.createVerticalGlue());
         panel.add(bottom);
 
         return panel;

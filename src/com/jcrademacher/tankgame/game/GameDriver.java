@@ -1,10 +1,6 @@
 package com.jcrademacher.tankgame.game;
 
 import com.jcrademacher.tankgame.main.SwingHandler;
-import com.jcrademacher.tankgame.player.AIPlayer;
-import com.jcrademacher.tankgame.player.GeneticPlayer;
-import com.jcrademacher.tankgame.player.HumanPlayer;
-import com.jcrademacher.tankgame.player.Player;
 
 import javax.swing.*;
 
@@ -17,7 +13,7 @@ public class GameDriver {
     private Timer timer;
 
     public GameDriver() {
-        game = new Game((String)SwingHandler.gameType.getSelectedItem());
+        game = new Game((String)SwingHandler.gameType.getSelectedItem(), this);
         timer = new Timer(20, game);
     }
 
@@ -29,5 +25,15 @@ public class GameDriver {
     public void pause() {
         timer.stop();
         System.out.println("Pause");
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    // kills all processes involved with gamedriver
+    public void killAll() {
+        timer.stop();
+        game.getFrame().dispose();
     }
 }
