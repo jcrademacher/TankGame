@@ -11,8 +11,9 @@ public class GeneticPlayer extends Player {
 
     //It's all voodoo magic... just not yet.
 
-    public GeneticPlayer(){
-        playerType = "GENETIC";
+    public GeneticPlayer(int startX, int startY) {
+        super(startX, startY);
+        super.playerType = "GENETIC";
     }
 
 }

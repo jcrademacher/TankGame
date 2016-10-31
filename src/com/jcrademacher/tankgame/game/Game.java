@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Random;
 
 /**
  * Created by jackrademacher on 10/29/16.
@@ -28,25 +29,35 @@ public class Game extends JPanel implements ActionListener, WindowListener {
         this.driver = driver;
         frame.addWindowListener(this);
 
+        Random rand = new Random();
+
+        // p1 will always be in top left quadrant
+        int p1X = rand.nextInt(400);
+        int p1Y = rand.nextInt(400);
+
+        // p2 will always be in bottom right quadrant
+        int p2X = rand.nextInt(400) + 400;
+        int p2Y = rand.nextInt(400) + 400;
+
         if(gameType.equals("Human v AI")) {
-            p1 = new HumanPlayer();
-            p2 = new AIPlayer();
+            p1 = new HumanPlayer(p1X, p1Y);
+            p2 = new AIPlayer(p2X, p2Y);
         }
         else if(gameType.equals("Human v Genetic")) {
-            p1 = new HumanPlayer();
-            p2 = new GeneticPlayer();
+            p1 = new HumanPlayer(p1X, p1Y);
+            p2 = new GeneticPlayer(p2X, p2Y);
         }
         else if(gameType.equals("Genetic v Genetic")) {
-            p1 = new GeneticPlayer();
-            p2 = new GeneticPlayer();
+            p1 = new GeneticPlayer(p1X, p1Y);
+            p2 = new GeneticPlayer(p2X, p2Y);
         }
         else if(gameType.equals("Genetic v AI")) {
-            p1 = new GeneticPlayer();
-            p2 = new AIPlayer();
+            p1 = new GeneticPlayer(p1X, p1Y);
+            p2 = new AIPlayer(p2X, p2Y);
         }
         else if(gameType.equals("AI v AI")) {
-            p1 = new AIPlayer();
-            p2 = new AIPlayer();
+            p1 = new AIPlayer(p1X, p1Y);
+            p2 = new AIPlayer(p2X, p2Y);
         }
 
         frame.setResizable(false);
@@ -65,6 +76,11 @@ public class Game extends JPanel implements ActionListener, WindowListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        Graphics2D graphics2D = (Graphics2D)g;
+
+        p1.draw(graphics2D);
+        p2.draw(graphics2D);
     }
 
     @Override

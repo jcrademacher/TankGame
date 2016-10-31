@@ -5,7 +5,8 @@ package com.jcrademacher.tankgame.player;
  */
 public class HumanPlayer extends Player {
 
-    public HumanPlayer(){
-        playerType = "HUMAN";
+    public HumanPlayer(int startX, int startY){
+        super(startX, startY);
+        super.playerType = "HUMAN";
     }
 }
