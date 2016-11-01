@@ -1,6 +1,11 @@
 package com.jcrademacher.tankgame.player;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Random;
 
 /**
@@ -21,16 +26,32 @@ public abstract class Player {
 
     private Random rand = new Random();
 
+    protected BufferedImage sprite;
+
+    private AffineTransform transformer;
+
     // constructor
-    public Player(int startX, int startY) {
-        if(startX > 800 || startY > 800)
+    public Player(int startX, int startY, int playerNumber) {
+        if(startX > 800 || startY > 800 || !(playerNumber == 1 || playerNumber == 2))
             throw new IllegalArgumentException();
         else {
             xPos = startX;
             yPos = startY;
+
+            try {
+                if (playerNumber == 1)
+                    sprite = ImageIO.read(new File("assets/redtank.png"));
+                else
+                    sprite = ImageIO.read(new File("assets/greentank.png"));
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        direction = rand.nextInt(360);
+        transformer = new AffineTransform();
+
+        direction = 90;
         dead = false;
         canShoot = true;
     }
@@ -55,6 +76,35 @@ public abstract class Player {
             throw new IllegalArgumentException();
         else
             this.yPos = yPos;
+    }
+
+    // moves tank forward
+    public void moveForward() {
+        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 5.0));
+        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 5.0));
+
+        xPos += dx;
+        yPos -= dy;
+    }
+
+    // moves tank backward
+    public void moveBackward() {
+        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 2.0));
+        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 2.0));
+
+        xPos -= dx;
+        yPos += dy;
+    }
+
+    public void rotateRight() {
+        direction -= 4;
+        if(direction < 0)
+            direction = 359;
+    }
+
+    public void rotateLeft() {
+        direction += 4;
+        direction %= 360;
     }
 
     public int getDirection() {
@@ -84,7 +134,11 @@ public abstract class Player {
         return playerType;
     }
 
-    public void draw(Graphics2D g) {
-
+    public void draw(Graphics2D g2d) {
+        // transformer is what rotates the image, first argument is absolute direction in rads, second two are anchor points
+        transformer = AffineTransform.getRotateInstance(-Math.toRadians(direction - 90), sprite.getWidth() / 2, sprite.getHeight() / 2);
+        AffineTransformOp op = new AffineTransformOp(transformer, AffineTransformOp.TYPE_BILINEAR);
+        // op.filter applies transformation
+        g2d.drawImage(op.filter(sprite, null), xPos, yPos, null);
     }
 }
