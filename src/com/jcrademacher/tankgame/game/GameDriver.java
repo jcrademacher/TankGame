@@ -14,7 +14,7 @@ public class GameDriver {
 
     public GameDriver() {
         game = new Game((String)SwingHandler.gameType.getSelectedItem(), this);
-        timer = new Timer(25, game);
+        timer = new Timer(20, game);
     }
 
     public void start() {

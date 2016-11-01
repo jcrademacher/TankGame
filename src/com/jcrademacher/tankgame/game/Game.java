@@ -1,9 +1,6 @@
 package com.jcrademacher.tankgame.game;
 
-import com.jcrademacher.tankgame.player.AIPlayer;
-import com.jcrademacher.tankgame.player.GeneticPlayer;
-import com.jcrademacher.tankgame.player.HumanPlayer;
-import com.jcrademacher.tankgame.player.Player;
+import com.jcrademacher.tankgame.player.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -98,6 +95,8 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         p1.draw(g2d);
         p2.draw(g2d);
+        p1.drawBullets(g2d);
+        p2.drawBullets(g2d);
     }
 
     @Override
@@ -123,6 +122,8 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
                 leftPressing = true;
             if(code == KeyEvent.VK_RIGHT)
                 rightPressing = true;
+            if(code == KeyEvent.VK_SPACE)
+                p1.shoot();
         }
     }
 

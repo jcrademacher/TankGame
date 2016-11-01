@@ -1,5 +1,7 @@
 package com.jcrademacher.tankgame.player;
 
+import com.sun.corba.se.impl.orbutil.graph.Graph;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -30,6 +32,8 @@ public abstract class Player {
 
     private AffineTransform transformer;
 
+    private Bullet[] bullets = new Bullet[3];
+
     // constructor
     public Player(int startX, int startY, int playerNumber) {
         if(startX > 800 || startY > 800 || !(playerNumber == 1 || playerNumber == 2))
@@ -54,6 +58,10 @@ public abstract class Player {
         direction = 90;
         dead = false;
         canShoot = true;
+
+        bullets[0] = new Bullet();
+        bullets[1] = new Bullet();
+        bullets[2] = new Bullet();
     }
 
     public int getX() {
@@ -80,11 +88,14 @@ public abstract class Player {
 
     // moves tank forward
     public void moveForward() {
-        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 5.0));
-        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 5.0));
+        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 4.0));
+        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 4.0));
 
-        xPos += dx;
-        yPos -= dy;
+        // tests if tank will go off screen
+        if(xPos + dx < 768 && yPos - dy < 752 && xPos + dx > 0 && yPos - dy > 0) {
+            xPos += dx;
+            yPos -= dy;
+        }
     }
 
     // moves tank backward
@@ -92,8 +103,11 @@ public abstract class Player {
         int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 2.0));
         int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 2.0));
 
-        xPos -= dx;
-        yPos += dy;
+        // tests if tank will go off screen
+        if(xPos - dx < 768 && yPos + dy < 752 && xPos - dx > 0 && yPos + dy > 0) {
+            xPos -= dx;
+            yPos += dy;
+        }
     }
 
     public void rotateRight() {
@@ -127,7 +141,20 @@ public abstract class Player {
     }
 
     public void shoot(){
-        canShoot = false;
+        for(int x = 0; x < bullets.length; x++) {
+            if(!bullets[x].isActive()) {
+                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 15));
+                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 15));
+
+                bullets[x] = new Bullet(direction, true, xPos + 16 + dx, yPos + 16 - dy);
+                return;
+            }
+        }
+    }
+
+    public void drawBullets(Graphics2D g2d) {
+        for(Bullet b : bullets)
+            b.draw(g2d);
     }
 
     public String getPlayerType() {
