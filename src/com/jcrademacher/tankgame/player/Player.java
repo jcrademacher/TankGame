@@ -24,7 +24,6 @@ public abstract class Player {
     protected String playerType;
 
     protected boolean dead;
-    protected boolean canShoot;
 
     private Random rand = new Random();
 
@@ -57,11 +56,11 @@ public abstract class Player {
 
         direction = 90;
         dead = false;
-        canShoot = true;
 
-        bullets[0] = new Bullet();
-        bullets[1] = new Bullet();
-        bullets[2] = new Bullet();
+        // inits bullets
+        for(int x = 0; x < bullets.length; x++)
+            bullets[x] = new Bullet();
+
     }
 
     public int getX() {

@@ -37,8 +37,8 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
         int p1Y = rand.nextInt(400);
 
         // p2 will always be in bottom right quadrant
-        int p2X = rand.nextInt(400) + 400;
-        int p2Y = rand.nextInt(400) + 400;
+        int p2X = rand.nextInt(400) + 368;
+        int p2Y = rand.nextInt(400) + 368;
 
         if(gameType.equals("Human v AI")) {
             p1 = new HumanPlayer(p1X, p1Y, 1);

@@ -15,6 +15,7 @@ public class Bullet {
     private boolean isActive;
 
     private boolean hasHit;
+    private boolean hasBounced;
 
     public Bullet(){
         this(0);
@@ -29,6 +30,8 @@ public class Bullet {
         this.isActive = isActive;
         this.xPos = xPos;
         this.yPos = yPos;
+
+        hasBounced = false;
     }
 
     public void draw(Graphics2D g2d) {
@@ -43,8 +46,41 @@ public class Bullet {
             xPos += dx;
             yPos -= dy;
 
-            if(xPos < 0 || yPos < 0 || xPos > 800 || yPos > 800)
-                isActive = false;
+            handleBouncing();
+        }
+    }
+
+    private void handleBouncing() {
+        if(!hasBounced) {
+            // if bullet has hit left wall...
+            if(xPos < 0) {
+                if(direction > 90 && direction < 180)
+                    direction = 180 - direction;
+                else if(direction > 180 && direction < 270)
+                    direction = 360 - (direction - 180);
+
+                hasBounced = true;
+            }
+
+            // if bullet has hit right wall...
+            if(xPos > 800) {
+                if(direction > 0 && direction < 90)
+                    direction = 180 - direction;
+                else if(direction > 270 && direction < 360)
+                    direction = 180 + 360 - direction;
+
+                hasBounced = true;
+            }
+
+            // if bullet has hit upper wall
+            if(yPos < 0 || yPos > 780) {
+                direction = 360 - direction;
+                hasBounced = true;
+            }
+        }
+        else if(xPos < 0 || xPos > 800 || yPos < 0 || yPos > 780) {
+            isActive = false;
+            hasBounced = false;
         }
     }
 
