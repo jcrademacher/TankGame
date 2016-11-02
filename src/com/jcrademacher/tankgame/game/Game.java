@@ -23,6 +23,8 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
     private boolean rightPressing = false;
     private boolean downPressing = false;
 
+    private double forceMultiplier = 0;
+
     // creates players as needed with specified game type
     public Game(String gameType, GameDriver driver) {
         this.driver = driver;
@@ -61,6 +63,9 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
             p2 = new AIPlayer(p2X, p2Y, 2);
         }
 
+        p1.addEnemy(p2);
+        p2.addEnemy(p1);
+
         frame.add(this);
         frame.setResizable(false);
         frame.setSize(800,800);
@@ -85,9 +90,12 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
         g2d.fillRect(0,0,800,800);
 
         if(upPressing)
-            p1.moveForward();
-        if(downPressing)
-            p1.moveBackward();
+            p1.accelerate(Player.FORWARD_ACCELERATION);
+        else if(downPressing)
+            p1.accelerate(Player.BACKWARD_ACCELERATION);
+        else
+            p1.decelerate();
+
         if(leftPressing)
             p1.rotateLeft();
         if(rightPressing)
@@ -102,7 +110,6 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-        System.out.println("ACTION");
     }
 
     @Override

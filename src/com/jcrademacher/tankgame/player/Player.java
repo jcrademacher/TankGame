@@ -8,12 +8,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Created by C7 on 10/29/2016.
  */
 public abstract class Player {
+
+    public static final int FORWARD_ACCELERATION = 1;
+    public static final int BACKWARD_ACCELERATION = -1;
 
     protected int xPos;
     protected int yPos;
@@ -30,8 +34,11 @@ public abstract class Player {
     protected BufferedImage sprite;
 
     private AffineTransform transformer;
-
     private Bullet[] bullets = new Bullet[3];
+
+    protected ArrayList<Player> enemies = new ArrayList<>();
+
+    private double forceMultiplier = 0;
 
     // constructor
     public Player(int startX, int startY, int playerNumber) {
@@ -85,27 +92,72 @@ public abstract class Player {
             this.yPos = yPos;
     }
 
-    // moves tank forward
-    public void moveForward() {
-        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 4.0));
-        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 4.0));
+    // canMove takes a dx and dy, and tests if the proposed move is valid
+    private boolean canMove(int dx, int dy) {
+        Rectangle[] collisionBoxes = new Rectangle[enemies.size()];
+        Rectangle collisionBoxSelf = new Rectangle(xPos + dx + 2,yPos - dy + 2,28,28);
 
-        // tests if tank will go off screen
-        if(xPos + dx < 768 && yPos - dy < 752 && xPos + dx > 0 && yPos - dy > 0) {
-            xPos += dx;
-            yPos -= dy;
+        // for every rectangle in enemy collisionBoxes...
+        for(int x = 0; x < collisionBoxes.length; x++) {
+            Player e = enemies.get(x);
+            collisionBoxes[x] = new Rectangle(e.getX() + 2, e.getY() + 2, 28, 28);
         }
+
+        if(xPos + dx > 768 || yPos - dy > 750 || xPos + dx < 0 || yPos - dy < 0)
+            return false;
+
+        for(Rectangle r : collisionBoxes) {
+            if(collisionBoxSelf.intersects(r))
+                return false;
+        }
+
+        return true;
     }
 
-    // moves tank backward
-    public void moveBackward() {
-        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 2.0));
-        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 2.0));
+    // essentially "pushes" tank along
+    public void accelerate(int accelDir) {
+        // forward acceleration pushes tank forward
+        if(accelDir == this.FORWARD_ACCELERATION) {
+            // force multiplier is how much the sin and cos values of direction are multiplied by,
+            // and thus determines how far the tank moves per 1 frame
+            if (forceMultiplier < 6.0)
+                forceMultiplier += 0.2;
+            else
+                forceMultiplier = 6.0;
+        }
+        // backward acceleration pushes tank backward (max back speed is limited to -3.0)
+        else if(accelDir == this.BACKWARD_ACCELERATION) {
+            if (forceMultiplier > -3.0)
+                forceMultiplier -= 0.2;
+            else
+                forceMultiplier = -3.0;
+        }
 
-        // tests if tank will go off screen
-        if(xPos - dx < 768 && yPos + dy < 752 && xPos - dx > 0 && yPos + dy > 0) {
-            xPos -= dx;
-            yPos += dy;
+        this.move();
+    }
+
+    // decelerate slows down movement no matter what direction tank is going
+    // --> always wants to bring forceMultiplier to 0
+    public void decelerate() {
+        if (forceMultiplier > 0)
+            forceMultiplier -= 0.1;
+        else if(forceMultiplier < 0)
+            forceMultiplier += 0.1;
+        else
+            forceMultiplier = 0;
+
+        this.move();
+    }
+
+    // moves tank forward
+    private void move() {
+        int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * forceMultiplier));
+        int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * forceMultiplier));
+
+        // tests if tank can move
+        if(canMove(dx, dy)) {
+            xPos += dx;
+            yPos -= dy;
         }
     }
 
@@ -118,6 +170,16 @@ public abstract class Player {
     public void rotateLeft() {
         direction += 4;
         direction %= 360;
+    }
+
+    // adds an enemy for Player to know about
+    public void addEnemy(Player player) {
+        enemies.add(player);
+    }
+
+    // gets enemies
+    public Player[] getEnemies() {
+        return (Player[])(enemies.toArray());
     }
 
     public int getDirection() {
@@ -139,6 +201,7 @@ public abstract class Player {
         this.dead = dead;
     }
 
+    // shoots bullets, bullets come out of tip of tank shooter, will bounce once before disappearing
     public void shoot(){
         for(int x = 0; x < bullets.length; x++) {
             if(!bullets[x].isActive()) {
@@ -151,6 +214,7 @@ public abstract class Player {
         }
     }
 
+    // draws all bullets associated with tank that shot them
     public void drawBullets(Graphics2D g2d) {
         for(Bullet b : bullets)
             b.draw(g2d);
@@ -160,6 +224,7 @@ public abstract class Player {
         return playerType;
     }
 
+    // draws tank, with AffineTransform (transformer) rotating the png
     public void draw(Graphics2D g2d) {
         // transformer is what rotates the image, first argument is absolute direction in rads, second two are anchor points
         transformer = AffineTransform.getRotateInstance(-Math.toRadians(direction - 90), sprite.getWidth() / 2, sprite.getHeight() / 2);
