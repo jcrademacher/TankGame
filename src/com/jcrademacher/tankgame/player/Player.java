@@ -34,7 +34,7 @@ public abstract class Player {
     protected BufferedImage sprite;
 
     private AffineTransform transformer;
-    private Bullet[] bullets = new Bullet[3];
+    private Bullet[] bullets = new Bullet[30];
 
     protected ArrayList<Player> enemies = new ArrayList<>();
 
@@ -103,12 +103,16 @@ public abstract class Player {
             collisionBoxes[x] = new Rectangle(e.getX() + 2, e.getY() + 2, 28, 28);
         }
 
-        if(xPos + dx > 768 || yPos - dy > 750 || xPos + dx < 0 || yPos - dy < 0)
+        if(xPos + dx > 768 || yPos - dy > 750 || xPos + dx < 0 || yPos - dy < 0) {
+            forceMultiplier = 0;
             return false;
+        }
 
         for(Rectangle r : collisionBoxes) {
-            if(collisionBoxSelf.intersects(r))
+            if(collisionBoxSelf.intersects(r)) {
+                forceMultiplier = 0;
                 return false;
+            }
         }
 
         return true;

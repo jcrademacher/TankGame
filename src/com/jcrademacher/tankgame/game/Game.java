@@ -68,7 +68,7 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         frame.add(this);
         frame.setResizable(false);
-        frame.setSize(800,800);
+        frame.setSize(1000,800);
         frame.setVisible(true);
     }
 
@@ -86,8 +86,17 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         Graphics2D g2d = (Graphics2D)g;
 
-        g2d.setColor(new Color(204, 255, 204));
+        g2d.setColor(new Color(160, 160, 160));
         g2d.fillRect(0,0,800,800);
+
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(800,0,5,800);
+
+        g2d.setColor(new Color(71, 113, 23));
+        g2d.fillRect(805,0,200,800);
+
+        g2d.setFont(new Font("Arial", Font.BOLD, 20));
+        g2d.drawString("Player 1 Health:", 810, 30);
 
         if(upPressing)
             p1.accelerate(Player.FORWARD_ACCELERATION);

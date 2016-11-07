@@ -63,7 +63,7 @@ public class Bullet {
             }
 
             // if bullet has hit right wall...
-            if(xPos > 800) {
+            if(xPos > 795) {
                 if(direction > 0 && direction < 90)
                     direction = 180 - direction;
                 else if(direction > 270 && direction < 360)
