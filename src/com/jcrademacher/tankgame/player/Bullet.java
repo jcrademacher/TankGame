@@ -14,7 +14,6 @@ public class Bullet {
 
     private boolean isActive;
 
-    private boolean hasHit;
     private boolean hasBounced;
 
     public Bullet(){
@@ -79,7 +78,7 @@ public class Bullet {
             }
         }
         else if(xPos < 0 || xPos > 800 || yPos < 0 || yPos > 780) {
-            isActive = false;
+            setActive(false);
             hasBounced = false;
         }
     }
@@ -88,11 +87,28 @@ public class Bullet {
         return isActive;
     }
 
+    public void setActive(boolean active) {
+        if (!active) {
+            xPos = 0;
+            yPos = 0;
+        }
+
+        isActive = active;
+    }
+
     public int getY() {
         return yPos;
     }
 
     public int getX() {
         return xPos;
+    }
+
+    public boolean hasCollidedWith(Shape s) {
+        Rectangle r = new Rectangle(xPos, yPos, 4,4);
+
+        if(s.intersects(r))
+            return true;
+        else return false;
     }
 }

@@ -95,8 +95,7 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
         g2d.setColor(new Color(71, 113, 23));
         g2d.fillRect(805,0,200,800);
 
-        g2d.setFont(new Font("Arial", Font.BOLD, 20));
-        g2d.drawString("Player 1 Health:", 810, 30);
+        drawHealthPanel(g2d);
 
         if(upPressing)
             p1.accelerate(Player.FORWARD_ACCELERATION);
@@ -114,6 +113,16 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
         p2.draw(g2d);
         p1.drawBullets(g2d);
         p2.drawBullets(g2d);
+    }
+
+    private void drawHealthPanel(Graphics2D g2d) {
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 20));
+        g2d.drawString("Player 1 Health:", 825, 30);
+        g2d.drawString("Player 2 Health:", 825, 400);
+
+        g2d.setColor(Color.PINK);
+        g2d.drawRect(825, 50, 80, 10);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.jcrademacher.tankgame.player;
 
-import com.sun.corba.se.impl.orbutil.graph.Graph;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -39,6 +37,9 @@ public abstract class Player {
     protected ArrayList<Player> enemies = new ArrayList<>();
 
     private double forceMultiplier = 0;
+    private Shape collisionBox;
+
+    private int health;
 
     // constructor
     public Player(int startX, int startY, int playerNumber) {
@@ -47,6 +48,12 @@ public abstract class Player {
         else {
             xPos = startX;
             yPos = startY;
+
+            health = 50;
+
+            // collision box slightly smaller than actual tank
+            // these just so happen to be the coordinates that fit the tank snugly
+            collisionBox = new Rectangle(xPos+6, yPos+7, 20,22);
 
             try {
                 if (playerNumber == 1)
@@ -103,17 +110,22 @@ public abstract class Player {
             collisionBoxes[x] = new Rectangle(e.getX() + 2, e.getY() + 2, 28, 28);
         }
 
+        // if hit wall, forceMultiplier to 0
         if(xPos + dx > 768 || yPos - dy > 750 || xPos + dx < 0 || yPos - dy < 0) {
             forceMultiplier = 0;
             return false;
         }
 
+        // if tank hits enemy
         for(Rectangle r : collisionBoxes) {
             if(collisionBoxSelf.intersects(r)) {
                 forceMultiplier = 0;
                 return false;
             }
         }
+
+        if(dead)
+            return false;
 
         return true;
     }
@@ -163,6 +175,18 @@ public abstract class Player {
             xPos += dx;
             yPos -= dy;
         }
+
+        // tests f every bullet has hit anything
+        for(Bullet b : bullets) {
+            if(b.hasCollidedWith(collisionBox)) {
+                b.setActive(false);
+
+                if(health != 0)
+                    health -= 10;
+                if(health == 0)
+                    dead = true;
+            }
+        }
     }
 
     public void rotateRight() {
@@ -209,8 +233,8 @@ public abstract class Player {
     public void shoot(){
         for(int x = 0; x < bullets.length; x++) {
             if(!bullets[x].isActive()) {
-                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 15));
-                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 15));
+                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 16));
+                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 16));
 
                 bullets[x] = new Bullet(direction, true, xPos + 16 + dx, yPos + 16 - dy);
                 return;
@@ -232,8 +256,17 @@ public abstract class Player {
     public void draw(Graphics2D g2d) {
         // transformer is what rotates the image, first argument is absolute direction in rads, second two are anchor points
         transformer = AffineTransform.getRotateInstance(-Math.toRadians(direction - 90), sprite.getWidth() / 2, sprite.getHeight() / 2);
+        collisionBox = new Rectangle(xPos+6, yPos+7, 20,22);
+
         AffineTransformOp op = new AffineTransformOp(transformer, AffineTransformOp.TYPE_BILINEAR);
         // op.filter applies transformation
         g2d.drawImage(op.filter(sprite, null), xPos, yPos, null);
+
+        // rotates collision box in correct order
+        g2d.setColor(Color.BLACK);
+        AffineTransform rotateBox = new AffineTransform();
+        rotateBox.rotate(-Math.toRadians(direction - 90), xPos + sprite.getWidth()/2, yPos + sprite.getHeight()/2);
+        collisionBox = rotateBox.createTransformedShape(collisionBox);
+        g2d.draw(collisionBox);
     }
 }
