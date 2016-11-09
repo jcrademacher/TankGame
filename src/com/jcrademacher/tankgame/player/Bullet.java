@@ -39,8 +39,8 @@ public class Bullet {
             g2d.fillRect(xPos, yPos, 4, 4);
 
             // controls speed/direction of bullet
-            int dx = Math.round((float) (Math.cos(Math.toRadians(direction)) * 8.0));
-            int dy = Math.round((float) (Math.sin(Math.toRadians(direction)) * 8.0));
+            int dx = Math.round((float) (Math.cos(Math.toRadians(direction)) * 10.0));
+            int dy = Math.round((float) (Math.sin(Math.toRadians(direction)) * 10.0));
 
             xPos += dx;
             yPos -= dy;

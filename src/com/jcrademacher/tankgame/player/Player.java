@@ -124,10 +124,8 @@ public abstract class Player {
             }
         }
 
-        if(dead)
-            return false;
+        return !dead;
 
-        return true;
     }
 
     // essentially "pushes" tank along
@@ -175,18 +173,6 @@ public abstract class Player {
             xPos += dx;
             yPos -= dy;
         }
-
-        // tests f every bullet has hit anything
-        for(Bullet b : bullets) {
-            if(b.hasCollidedWith(collisionBox)) {
-                b.setActive(false);
-
-                if(health != 0)
-                    health -= 10;
-                if(health == 0)
-                    dead = true;
-            }
-        }
     }
 
     public void rotateRight() {
@@ -233,8 +219,8 @@ public abstract class Player {
     public void shoot(){
         for(int x = 0; x < bullets.length; x++) {
             if(!bullets[x].isActive()) {
-                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 16));
-                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 16));
+                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 22));
+                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 22));
 
                 bullets[x] = new Bullet(direction, true, xPos + 16 + dx, yPos + 16 - dy);
                 return;
@@ -250,6 +236,26 @@ public abstract class Player {
 
     public String getPlayerType() {
         return playerType;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setBullets(Bullet[] bullets) {
+        this.bullets = bullets;
+    }
+
+    public Bullet[] getBullets() {
+        return bullets;
+    }
+
+    public Shape getCollisionBox() {
+        return collisionBox;
     }
 
     // draws tank, with AffineTransform (transformer) rotating the png

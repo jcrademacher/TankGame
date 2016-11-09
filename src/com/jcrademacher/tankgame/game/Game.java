@@ -111,8 +111,64 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         p1.draw(g2d);
         p2.draw(g2d);
+
+        this.handleCollisions();
+
         p1.drawBullets(g2d);
         p2.drawBullets(g2d);
+    }
+
+    private void handleCollisions() {
+        Bullet[] p1bullets = p1.getBullets();
+        Bullet[] p2bullets = p2.getBullets();
+
+        Shape p1CollisionBox = p1.getCollisionBox();
+        Shape p2CollisionBox = p2.getCollisionBox();
+
+        // tests if every bullet has hit anything (player 1 bullets)
+        for(Bullet b : p1bullets) {
+            if(b.hasCollidedWith(p1CollisionBox)) {
+                b.setActive(false);
+
+                if(p1.getHealth() != 0)
+                    p1.setHealth(p1.getHealth() - 5);
+                if(p1.getHealth() == 0)
+                    p1.setDead(true);
+            }
+
+            if(b.hasCollidedWith(p2CollisionBox)) {
+                b.setActive(false);
+
+                if(p2.getHealth() != 0)
+                    p2.setHealth(p2.getHealth() - 5);
+                if(p2.getHealth() == 0)
+                    p2.setDead(true);
+            }
+        }
+
+        // p2 bullets testing (same as above)
+        for(Bullet b : p2bullets) {
+            if(b.hasCollidedWith(p1CollisionBox)) {
+                b.setActive(false);
+
+                if(p1.getHealth() != 0)
+                    p1.setHealth(p1.getHealth() - 5);
+                if(p1.getHealth() == 0)
+                    p1.setDead(true);
+            }
+
+            if(b.hasCollidedWith(p2CollisionBox)) {
+                b.setActive(false);
+
+                if(p2.getHealth() != 0)
+                    p2.setHealth(p2.getHealth() - 5);
+                if(p2.getHealth() == 0)
+                    p2.setDead(true);
+            }
+        }
+
+        p1.setBullets(p1bullets);
+        p2.setBullets(p2bullets);
     }
 
     private void drawHealthPanel(Graphics2D g2d) {
@@ -122,7 +178,17 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
         g2d.drawString("Player 2 Health:", 825, 400);
 
         g2d.setColor(Color.PINK);
-        g2d.drawRect(825, 50, 80, 10);
+
+        int p1HealthChange = (int)((double)(p1.getHealth()) / 50 * 241);
+        int p2HealthChange = (int)((double)(p2.getHealth()) / 50 * 241);
+
+        // draws p1 health
+        g2d.drawRect(875, 80, 50, 250);
+        g2d.fillRect(880, 85 + 241 - p1HealthChange, 41, p1HealthChange);
+
+        // draws p2 health
+        g2d.drawRect(875, 480, 50, 250);
+        g2d.fillRect(880, 485 + 241 - p2HealthChange, 41, p2HealthChange);
     }
 
     @Override
@@ -147,7 +213,7 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
                 leftPressing = true;
             if(code == KeyEvent.VK_RIGHT)
                 rightPressing = true;
-            if(code == KeyEvent.VK_SPACE)
+            if(code == KeyEvent.VK_SPACE && !p1.isDead())
                 p1.shoot();
         }
     }
