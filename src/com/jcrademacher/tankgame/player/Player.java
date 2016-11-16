@@ -219,10 +219,10 @@ public abstract class Player {
     public void shoot(){
         for(int x = 0; x < bullets.length; x++) {
             if(!bullets[x].isActive()) {
-                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 22));
-                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 22));
+                int dx = Math.round((float)(Math.cos(Math.toRadians(direction)) * 20));
+                int dy = Math.round((float)(Math.sin(Math.toRadians(direction)) * 20));
 
-                bullets[x] = new Bullet(direction, true, xPos + 16 + dx, yPos + 16 - dy);
+                bullets[x] = new Bullet(direction, true, xPos + 14 + dx, yPos + 14 - dy);
                 return;
             }
         }
