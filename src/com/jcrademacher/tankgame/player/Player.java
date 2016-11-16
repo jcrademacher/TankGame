@@ -27,12 +27,10 @@ public abstract class Player {
 
     protected boolean dead;
 
-    private Random rand = new Random();
-
     protected BufferedImage sprite;
 
     private AffineTransform transformer;
-    private Bullet[] bullets = new Bullet[30];
+    private Bullet[] bullets = new Bullet[3];
 
     protected ArrayList<Player> enemies = new ArrayList<>();
 
@@ -131,7 +129,7 @@ public abstract class Player {
     // essentially "pushes" tank along
     public void accelerate(int accelDir) {
         // forward acceleration pushes tank forward
-        if(accelDir == this.FORWARD_ACCELERATION) {
+        if(accelDir == FORWARD_ACCELERATION) {
             // force multiplier is how much the sin and cos values of direction are multiplied by,
             // and thus determines how far the tank moves per 1 frame
             if (forceMultiplier < 6.0)
@@ -140,7 +138,7 @@ public abstract class Player {
                 forceMultiplier = 6.0;
         }
         // backward acceleration pushes tank backward (max back speed is limited to -3.0)
-        else if(accelDir == this.BACKWARD_ACCELERATION) {
+        else if(accelDir == BACKWARD_ACCELERATION) {
             if (forceMultiplier > -3.0)
                 forceMultiplier -= 0.2;
             else
@@ -192,19 +190,12 @@ public abstract class Player {
     }
 
     // gets enemies
-    public Player[] getEnemies() {
-        return (Player[])(enemies.toArray());
+    public ArrayList<Player> getEnemies() {
+        return enemies;
     }
 
     public int getDirection() {
         return direction;
-    }
-
-    public void setDirection(int direction) {
-        if(direction >= 360)
-            throw new IllegalArgumentException();
-        else
-            this.direction = direction;
     }
 
     public boolean isDead() {
@@ -229,7 +220,7 @@ public abstract class Player {
     }
 
     // draws all bullets associated with tank that shot them
-    public void drawBullets(Graphics2D g2d) {
+    private void drawBullets(Graphics2D g2d) {
         for(Bullet b : bullets)
             b.draw(g2d);
     }
@@ -258,8 +249,16 @@ public abstract class Player {
         return collisionBox;
     }
 
+    /*
+     * method is overridden in subclasses
+     */
+    public void fireAction(Graphics2D g2d) {
+        this.draw(g2d);
+        this.drawBullets(g2d);
+    }
+
     // draws tank, with AffineTransform (transformer) rotating the png
-    public void draw(Graphics2D g2d) {
+    private void draw(Graphics2D g2d) {
         // transformer is what rotates the image, first argument is absolute direction in rads, second two are anchor points
         transformer = AffineTransform.getRotateInstance(-Math.toRadians(direction - 90), sprite.getWidth() / 2, sprite.getHeight() / 2);
         collisionBox = new Rectangle(xPos+6, yPos+7, 20,22);

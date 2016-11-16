@@ -104,6 +104,10 @@ public class Bullet {
         return xPos;
     }
 
+    public int getDirection() {
+        return direction;
+    }
+
     public boolean hasCollidedWith(Shape s) {
         Rectangle r = new Rectangle(xPos, yPos, 4,4);
 

@@ -23,8 +23,6 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
     private boolean rightPressing = false;
     private boolean downPressing = false;
 
-    private double forceMultiplier = 0;
-
     // creates players as needed with specified game type
     public Game(String gameType, GameDriver driver) {
         this.driver = driver;
@@ -86,6 +84,15 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         Graphics2D g2d = (Graphics2D)g;
 
+        this.drawField(g2d);
+        this.drawHealthPanel(g2d);
+        this.handleHumanInput();
+        this.handlePlayerActions(g2d);
+        this.handleCollisions();
+    }
+
+    private void drawField(Graphics2D g2d) {
+
         g2d.setColor(new Color(160, 160, 160));
         g2d.fillRect(0,0,800,800);
 
@@ -94,9 +101,14 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
 
         g2d.setColor(new Color(71, 113, 23));
         g2d.fillRect(805,0,200,800);
+    }
 
-        drawHealthPanel(g2d);
+    private void handlePlayerActions(Graphics2D g2d) {
+        p1.fireAction(g2d);
+        p2.fireAction(g2d);
+    }
 
+    private void handleHumanInput() {
         if(upPressing)
             p1.accelerate(Player.FORWARD_ACCELERATION);
         else if(downPressing)
@@ -108,14 +120,6 @@ public class Game extends JPanel implements ActionListener, WindowListener, KeyL
             p1.rotateLeft();
         if(rightPressing)
             p1.rotateRight();
-
-        p1.draw(g2d);
-        p2.draw(g2d);
-
-        this.handleCollisions();
-
-        p1.drawBullets(g2d);
-        p2.drawBullets(g2d);
     }
 
     private void handleCollisions() {
